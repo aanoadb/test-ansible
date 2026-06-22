@@ -33,6 +33,7 @@
         repo: "{{ repo_url }}"
         dest: "{{ app_dir }}"
         version: main
+        force: yes
 
     - name: Install npm dependencies
       command: npm install
