@@ -9,6 +9,16 @@
         name: nginx
         state: present
 
+    # NEW TASK: Open port 80 in the firewall
+    - name: Allow HTTP traffic through firewall
+      firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: enabled
+
+    # Note: I moved the HTML deployment AFTER the firewall config 
+    # just so everything is ready when the files land.
     - name: Deploy custom HTML index page
       copy:
         content: "<h1>Hello World! App deployed via Ansible.</h1>"
