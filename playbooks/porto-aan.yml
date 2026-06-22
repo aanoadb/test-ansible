@@ -18,9 +18,7 @@
         state: present
 
     - name: Install PM2 globally via npm
-      npm:
-        name: pm2
-        global: true
+      command: npm install -g pm2
 
     - name: Create application directory
       file:
@@ -37,13 +35,22 @@
         version: main
 
     - name: Install npm dependencies
-      npm:
-        path: "{{ app_dir }}"
+      command: npm install
+      args:
+        chdir: "{{ app_dir }}"
 
     - name: Build application
       command: npm run build
       args:
         chdir: "{{ app_dir }}"
+
+    - name: Fix application directory permissions recursively
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: nginx
+        group: nginx
+        recurse: yes
 
     - name: Start Next.js app with PM2
       shell: "pm2 start npm --name 'nextjs-app' --current-env -- run start"
@@ -53,11 +60,11 @@
       environment:
         PORT: 3000
         NODE_ENV: production
-
+          
     - name: Save PM2 process list
       shell: "pm2 save"
       become_user: nginx
-
+        
     - name: Process list
       shell: "pm2 list"
       become_user: nginx
