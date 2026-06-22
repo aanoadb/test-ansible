@@ -1,0 +1,30 @@
+---
+- name: Create directory and file on managed host
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure target directory exists
+      ansible.builtin.file:
+        path: /tmp/ansible-test
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Create file with content
+      ansible.builtin.copy:
+        content: "test\nThis file was created by Ansible Automation Platform.\nDeployed on: {{ ansible_date_time.iso8601 }}\n"
+        dest: /tmp/ansible-test/test.txt
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Verify file content
+      ansible.builtin.command:
+        cmd: cat /tmp/ansible-test/test.txt
+      register: file_content
+      changed_when: false
+
+    - name: Display file content
+      ansible.builtin.debug:
+        msg: "{{ file_content.stdout_lines }}"
