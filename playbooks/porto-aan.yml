@@ -8,6 +8,15 @@
     repo_url: "https://github.com/zannn1019/aan-porto.git"
 
   tasks:
+    - name: Reset default Node.js module stream
+      command: dnf module reset nodejs -y
+      changed_when: false
+
+    - name: Enable Node.js 20 module stream
+      dnf:
+        name: "@nodejs:20"
+        state: present
+        
     - name: Install required packages
       dnf:
         name:
