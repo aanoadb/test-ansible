@@ -74,18 +74,27 @@
         recurse: yes
 
     - name: Start Next.js app with PM2
-      command: "pm2 start ecosystem.config.cjs"
+      shell: "pm2 start ecosystem.config.cjs"
       args:
         chdir: "{{ app_dir }}"
       become_user: nginx
+      environment:
+        PORT: 3000
+        NODE_ENV: production
+        # FIX: This forces the nginx user to see where PM2 was installed
+        PATH: "/usr/local/bin:/usr/bin:/bin"
           
     - name: Save PM2 process list
       shell: "pm2 save"
       become_user: nginx
+      environment:
+        PATH: "/usr/local/bin:/usr/bin:/bin"
         
     - name: Process list
       shell: "pm2 list"
       become_user: nginx
+      environment:
+        PATH: "/usr/local/bin:/usr/bin:/bin"
 
     - name: Configure Nginx reverse proxy routing
       copy:
