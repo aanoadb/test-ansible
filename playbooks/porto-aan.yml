@@ -51,9 +51,11 @@
         environment:
           PORT: 3000
           NODE_ENV: production
+          
     - name: Save PM2 process list
         shell: "pm2 save"
         become_user: nginx
+        
     - name: Process list
         shell: "pm2 list"
         become_user: nginx
