@@ -4,24 +4,17 @@
   become: true
 
   tasks:
-    - name: Install Python
-      apt: 
-        name: python3-apt
-        state: present
-        update_cache: true
-        
     - name: Ensure Nginx is installed
-      apt:
+      dnf:
         name: nginx
         state: present
-        update_cache: true
 
     - name: Deploy custom HTML index page
       copy:
         content: "<h1>Hello World! App deployed via Ansible.</h1>"
-        dest: /var/www/html/index.html
-        owner: www-data
-        group: www-data
+        dest: /usr/share/nginx/html/index.html
+        owner: nginx
+        group: nginx
         mode: '0644'
 
     - name: Ensure Nginx is running and enabled on boot
