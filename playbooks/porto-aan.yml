@@ -74,7 +74,7 @@
         recurse: yes
 
     - name: Start Next.js app with PM2
-      shell: "pm2 start ecosystem.config.cjs"
+      command: "pm2 start ecosystem.config.cjs"
       args:
         chdir: "{{ app_dir }}"
       become_user: nginx
@@ -86,3 +86,44 @@
     - name: Process list
       shell: "pm2 list"
       become_user: nginx
+
+    - name: Configure Nginx reverse proxy routing
+      copy:
+        dest: /etc/nginx/conf.d/porto-aan.conf
+        content: |
+          server {
+              listen 80;
+              server_name _;
+              location / {
+                  proxy_pass http://127.0.0.1:3000;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection 'upgrade';
+                  proxy_set_header Host $host;
+                  proxy_cache_bypass $http_upgrade;
+              }
+          }
+
+    - name: Remove default Nginx welcome page
+      file:
+        path: /usr/share/nginx/html/index.html
+        state: absent
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+        enabled: true
+
+    - name: Allow HTTP traffic through firewall
+      firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Configure SELinux for Nginx networking
+      seboolean:
+        name: httpd_can_network_connect
+        state: true
+        persistent: true
