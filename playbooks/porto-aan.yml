@@ -74,13 +74,10 @@
         recurse: yes
 
     - name: Start Next.js app with PM2
-      shell: "pm2 start npm --name 'nextjs-app' --current-env -- run start"
+      shell: "pm2 start ecosystem.config.cjs"
       args:
         chdir: "{{ app_dir }}"
       become_user: nginx
-      environment:
-        PORT: 3000
-        NODE_ENV: production
           
     - name: Save PM2 process list
       shell: "pm2 save"
