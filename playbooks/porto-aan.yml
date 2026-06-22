@@ -27,7 +27,10 @@
         owner: nginx
         group: nginx
         mode: '0755'
-
+        
+    - name: Create Safe Directory
+      command: "git config --global --add safe.directory {{app_dir}}"
+      
     - name: Clone Next.js repository
       git:
         repo: "{{ repo_url }}"
