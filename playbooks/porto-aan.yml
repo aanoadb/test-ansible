@@ -26,6 +26,14 @@
           - git
         state: present
 
+    - name: Check Node.js version
+      command: node -v
+      register: node_version
+
+    - name: Print Node.js version
+      debug:
+        msg: "The installed Node version is {{ node_version.stdout }}"
+
     - name: Install PM2 globally via npm
       command: npm install -g pm2
 
