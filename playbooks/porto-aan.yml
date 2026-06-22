@@ -1,0 +1,59 @@
+---
+- name: Deploy a Next.js Production Application
+  hosts: 192.168.18.121
+  become: true
+
+  vars:
+    app_dir: "/var/www/aan-porto"
+    repo_url: "https://github.com/zannn1019/aan-porto.git"
+
+  tasks:
+    - name: Install required packages
+      dnf:
+        name:
+          - nginx
+          - nodejs
+          - npm
+          - git
+        state: present
+    - name: Install PM2 globally via npm
+        npm:
+          name: pm2
+          global: true
+    - name: Create application directory
+        file:
+          path: "{{ app_dir }}"
+          state: directory
+          owner: nginx
+          group: nginx
+          mode: '0755'
+
+    - name: Clone Next.js repository
+          git:
+            repo: "{{repo_url}}"
+            dest: "{{ app_dir }}"
+            version: main
+    
+    - name: Install npm dependencies
+        npm:
+          path: "{{ app_dir }}"
+
+    - name: Build application
+        command: npm run build
+        args:
+          chdir: "{{ app_dir }}"
+          
+    - name: Start Next.js app with PM2
+        shell: "pm2 start npm --name 'nextjs-app' --current-env -- run start"
+        args:
+          chdir: "{{ app_dir }}"
+        become_user: nginx
+        environment:
+          PORT: 3000
+          NODE_ENV: production
+    - name: Save PM2 process list
+        shell: "pm2 save"
+        become_user: nginx
+    - name: Process list
+        shell: "pm2 list"
+        become_user: nginx
