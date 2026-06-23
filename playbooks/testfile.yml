@@ -1,6 +1,6 @@
 ---
 - name: Create directory and file on managed host
-  hosts: rocky-cl
+  hosts: rhel-cl1
   become: yes
   tasks:
     - name: Ensure target directory exists
