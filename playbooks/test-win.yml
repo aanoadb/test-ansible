@@ -15,5 +15,5 @@
         state: touch
 
     - name: Mengisi teks ke dalam file menggunakan PowerShell command
-      ansible.builtin.shell: |
+      ansible.windows.win_shell: |
         Add-Content -Path "C:\AnsibleTest\hasil_test.txt" -Value "Koneksi Ansible via SSH sukses! File ini dibuat pada tahun 2026."
