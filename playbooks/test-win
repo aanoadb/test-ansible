@@ -1,0 +1,20 @@
+---
+- name: Test Koneksi dan Pembuatan File di Windows Server
+  hosts: windows-cl
+  gather_facts: no
+  tasks:
+
+    - name: Memastikan folder tujuan sudah ada
+      ansible.windows.win_file:
+        path: C:\AnsibleTest
+        state: directory
+
+    - name: Membuat file teks baru di Windows Server
+      ansible.windows.win_file:
+        path: C:\AnsibleTest\hasil_test.txt
+        state: touch
+
+    - name: Mengisi teks ke dalam file yang baru dibuat
+      ansible.windows.win_lineinfile:
+        path: C:\AnsibleTest\hasil_test.txt
+        line: "Koneksi Ansible via SSH sukses! File ini dibuat pada tahun 2026."
