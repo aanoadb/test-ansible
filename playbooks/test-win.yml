@@ -14,7 +14,6 @@
         path: C:\AnsibleTest\hasil_test.txt
         state: touch
 
-    - name: Mengisi teks ke dalam file yang baru dibuat
-      ansible.windows.win_lineinfile:
-        path: C:\AnsibleTest\hasil_test.txt
-        line: "Koneksi Ansible via SSH sukses! File ini dibuat pada tahun 2026."
+    - name: Mengisi teks ke dalam file menggunakan PowerShell command
+      ansible.builtin.shell: |
+        Add-Content -Path "C:\AnsibleTest\hasil_test.txt" -Value "Koneksi Ansible via SSH sukses! File ini dibuat pada tahun 2026."
