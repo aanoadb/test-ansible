@@ -1,0 +1,16 @@
+---
+- name: Manage OpenShift Cluster
+  hosts: ocpv4
+  gather_facts: false
+
+  tasks:
+    - name: Create a new project namespace
+      redhat.openshift.k8s:
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: ansible-test 
+        state: present
+      vars:
+        ansible_connection: local
